@@ -10,6 +10,8 @@ if (!src) {
   throw new Error("pages-postbuild: missing prerendered HTML shell in dist/client");
 }
 
+const nul = String.fromCharCode(0);
+const escape = "\\u0000";
 let html = readFileSync(join(dir, src), "utf8");
 if (css) {
   html = html.replace(
@@ -18,7 +20,15 @@ if (css) {
   );
 }
 // GitHub Pages treats a literal NUL as a binary file and serves `/` as a download.
-html = html.replaceAll("\u0000", "\\u0000");
+html = html.split(nul).join(escape);
+
+if (html.includes(nul)) {
+  throw new Error("pages-postbuild: NUL byte still present in HTML");
+}
 
 writeFileSync(join(dir, "index.html"), html);
 writeFileSync(join(dir, "404.html"), html);
+
+if (readFileSync(join(dir, "index.html")).includes(0)) {
+  throw new Error("pages-postbuild: wrote a NUL byte to index.html");
+}
