@@ -11,12 +11,14 @@ if (!src) {
 }
 
 let html = readFileSync(join(dir, src), "utf8");
-if (css) {
+<if (css) {
   html = html.replace(
     /\/pomodoro\/assets\/styles-[^"']+\.css/g,
     `/pomodoro/assets/${css}`,
   );
 }
+// GitHub Pages treats a literal NUL as a binary file and serves `/` as a download.
+html = html.replaceAll("\u0000", "\\u0000");
 
 writeFileSync(join(dir, "index.html"), html);
 writeFileSync(join(dir, "404.html"), html);
