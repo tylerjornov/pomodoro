@@ -1,0 +1,62 @@
+{
+  "channels": [
+    {
+      "id": "UCV03SRZXJEz-hchIAogeJOg",
+      "name": "Claude",
+      "handle": "@claude",
+      "streams": [
+        {
+          "videoId": "tRsQsTMvPNg",
+          "title": "Claude FM 🎵 music for thinking and building",
+          "channelId": "UCV03SRZXJEz-hchIAogeJOg",
+          "channelName": "Claude"
+        }
+      ]
+    },
+    {
+      "id": "UCZlJ1VMQEnZhs7SRfJBExwg",
+      "name": "Catholic Lofi",
+      "handle": "@catholiclofi",
+      "streams": [
+        {
+          "videoId": "bfrsowuUE28",
+          "title": "ＳＬＥＥＰＹ stream 💤 24/7   with chant rain sounds (0 ads ever.)",
+          "channelId": "UCZlJ1VMQEnZhs7SRfJBExwg",
+          "channelName": "Catholic Lofi"
+        }
+      ]
+    },
+    {
+      "id": "UCOxqgCwgOqC2lMqC5PYz_Dg",
+      "name": "Chillhop",
+      "handle": "@ChillhopMusic",
+      "streams": [
+        {
+          "videoId": "ohrjSFplPzk",
+          "title": "Chillhop Essentials Radio ∙ limited time livestream",
+          "channelId": "UCOxqgCwgOqC2lMqC5PYz_Dg",
+          "channelName": "Chillhop"
+        },
+        {
+          "videoId": "i6WzngxTnBA",
+          "title": "late night vibes radio - calm lofi / dreamy beats 😴",
+          "channelId": "UCOxqgCwgOqC2lMqC5PYz_Dg",
+          "channelName": "Chillhop"
+        },
+        {
+          "videoId": "7NOSDKb0HlU",
+          "title": "lofi hip hop radio - beats to study/relax to 🐾",
+          "channelId": "UCOxqgCwgOqC2lMqC5PYz_Dg",
+          "channelName": "Chillhop"
+        },
+        {
+          "videoId": "5yx6BWlEVcY",
+          "title": "Chillhop Radio - jazzy & lofi hip hop beats 🐾",
+          "channelId": "UCOxqgCwgOqC2lMqC5PYz_Dg",
+          "channelName": "Chillhop"
+        }
+      ]
+    }
+  ],
+  "fetchedAt": 1787266332959
+}

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { LOFI_CHANNELS, type ChannelLiveGroup, type LofiLivePayload } from "@/lib/lofi-catalog";
+import { fetchStaticLofiCatalog, hasStreams } from "@/lib/lofi-static";
 import { getLofiLiveStreams } from "@/lib/lofi-streams";
 import { parseYouTubeId, youtubeEmbedSrc } from "@/lib/youtube";
 import { cn } from "@/lib/utils";
@@ -50,16 +51,30 @@ export function LofiEmbed({ initialCatalog = null }: { initialCatalog?: LofiLive
   const [draft, setDraft] = useState("");
   const [videoId, setVideoId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [catalog, setCatalog] = useState<LofiLivePayload | null>(initialCatalog);
+  const [catalog, setCatalog] = useState<LofiLivePayload | null>(
+    hasStreams(initialCatalog) ? initialCatalog : null,
+  );
   const [catalogError, setCatalogError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(!initialCatalog);
+  const [loading, setLoading] = useState(!hasStreams(initialCatalog));
 
   const loadCatalog = useCallback(async (refresh = false) => {
     setLoading(true);
     setCatalogError(null);
     try {
-      const payload = await getLofiLiveStreams(refresh ? { data: { refresh: true } } : undefined);
-      setCatalog(payload);
+      try {
+        const payload = await getLofiLiveStreams(refresh ? { data: { refresh: true } } : undefined);
+        if (hasStreams(payload)) {
+          setCatalog(payload);
+          return;
+        }
+      } catch {
+        // Static hosts (GitHub Pages) have no server functions.
+      }
+      const snapshot = await fetchStaticLofiCatalog();
+      if (!hasStreams(snapshot)) {
+        throw new Error("None of these channels are live right now.");
+      }
+      setCatalog(snapshot);
     } catch (err) {
       setCatalogError(err instanceof Error ? err.message : "Could not load livestreams.");
     } finally {
@@ -71,7 +86,7 @@ export function LofiEmbed({ initialCatalog = null }: { initialCatalog?: LofiLive
     const saved = loadSaved();
     setVideoId(saved.videoId);
     setDraft(saved.draft);
-    if (!initialCatalog) void loadCatalog();
+    if (!hasStreams(initialCatalog)) void loadCatalog();
   }, [initialCatalog, loadCatalog]);
 
   function selectStream(id: string, title?: string) {
@@ -187,7 +202,7 @@ export function LofiEmbed({ initialCatalog = null }: { initialCatalog?: LofiLive
             title="Lofi livestream"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
-            referrerPolicy="strict-origin-when-cross-origin"
+            referrerPolicy="origin"
             className="absolute inset-0 size-full border-0"
           />
         ) : (

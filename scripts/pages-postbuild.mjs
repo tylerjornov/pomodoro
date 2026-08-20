@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const dir = "dist/client";
@@ -19,7 +19,6 @@ if (css) {
     `/pomodoro/assets/${css}`,
   );
 }
-// GitHub Pages treats a literal NUL as a binary file and serves `/` as a download.
 html = html.split(nul).join(escape);
 
 if (html.includes(nul)) {
@@ -28,6 +27,10 @@ if (html.includes(nul)) {
 
 writeFileSync(join(dir, "index.html"), html);
 writeFileSync(join(dir, "404.html"), html);
+
+if (existsSync("public/lofi-live.json")) {
+  copyFileSync("public/lofi-live.json", join(dir, "lofi-live.json"));
+}
 
 if (readFileSync(join(dir, "index.html")).includes(0)) {
   throw new Error("pages-postbuild: wrote a NUL byte to index.html");
