@@ -19,15 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: "22"
-          cache: npm
-      - run: npm install
-      - run: npm run build:pages
+      - name: Stage existing static files
+        run: |
+          mkdir _site
+          cp index.html 404.html favicon.svg _site/
+          cp -a assets __grok _site/
+          touch _site/.nojekyll
+          python3 -c "from pathlib import Path; d=Path('_site/index.html').read_bytes(); assert b'\x00' not in d, 'NUL in index.html'; print('index.html', len(d), 'bytes, no NUL')"
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/client
+          path: _site
 
   deploy:
     needs: build
