@@ -7,7 +7,8 @@ function hasStreams(payload: LofiLivePayload | null | undefined): boolean {
 export { hasStreams };
 
 export async function fetchStaticLofiCatalog(): Promise<LofiLivePayload> {
-  const url = new URL("lofi-live.json", import.meta.env.BASE_URL).toString();
+  const base = import.meta.env.BASE_URL || "/";
+  const url = `${base.endsWith("/") ? base : `${base}/`}lofi-live.json`;
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) {
     throw new Error("Could not load livestreams.");
