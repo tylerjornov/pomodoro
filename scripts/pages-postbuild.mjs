@@ -11,7 +11,7 @@ if (!src) {
 }
 
 let html = readFileSync(join(dir, src), "utf8");
-<if (css) {
+if (css) {
   html = html.replace(
     /\/pomodoro\/assets\/styles-[^"']+\.css/g,
     `/pomodoro/assets/${css}`,
