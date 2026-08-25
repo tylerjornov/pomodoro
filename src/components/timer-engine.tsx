@@ -15,20 +15,37 @@ export function TimerEngine() {
 
   useEffect(() => {
     if (status !== "running") return;
-    let id = 0;
+
+    let raf = 0;
     let last = 0;
-    const loop = (t: number) => {
-      if (t - last >= 50) {
-        last = t;
+    const loop = (now: number) => {
+      if (now - last >= 50) {
+        last = now;
         tick();
       }
-      id = requestAnimationFrame(loop);
+      raf = requestAnimationFrame(loop);
     };
-    id = requestAnimationFrame(loop);
-    const onVis = () => tick();
+
+    const startRaf = () => {
+      cancelAnimationFrame(raf);
+      last = 0;
+      raf = requestAnimationFrame(loop);
+    };
+
+    // Background tabs freeze rAF, so an interval keeps the title and
+    // phase completion moving while the page is hidden.
+    const interval = window.setInterval(tick, 250);
+    const onVis = () => {
+      tick();
+      if (document.hidden) cancelAnimationFrame(raf);
+      else startRaf();
+    };
+
+    if (!document.hidden) startRaf();
     document.addEventListener("visibilitychange", onVis);
     return () => {
-      cancelAnimationFrame(id);
+      cancelAnimationFrame(raf);
+      window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVis);
     };
   }, [status, tick]);
